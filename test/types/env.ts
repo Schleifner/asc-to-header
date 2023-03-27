@@ -1,0 +1,1 @@
+export declare function logDebug(pointer: i32, length: i32): void;
