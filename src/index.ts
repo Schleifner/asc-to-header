@@ -16,11 +16,11 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     this.content += '\n';
   }
 
-  genValueFromRange(range: assemblyscript.Range): String {
+  genValueFromRange(range: assemblyscript.Range): string {
     return range.source.text.substring(range.start, range.end);;
   }
 
-  transformAscTypeToCType(type: assemblyscript.TypeNode): String {
+  transformAscTypeToCType(type: assemblyscript.TypeNode): string {
     const typeString = this.genValueFromRange(type.range);
     switch (typeString) {
       case "void":
@@ -77,13 +77,13 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     functionCDefine += ` __attribute__((import_module(\"${node.range.source.simplePath}\"))) ${this.transformAscTypeToCType(node.signature.returnType)} ${node.name.text}(`;
 
     for (let i = 0; i < node.signature.parameters.length; ++i) {
-      let parameter = node.signature.parameters[i];
+      const parameter = node.signature.parameters[i];
       let endChar = ",";
-      if (i == (node.signature.parameters.length - 1)) {
+      if (i === (node.signature.parameters.length - 1)) {
         endChar = "";
       }
       const cType = this.transformAscTypeToCType(parameter.type);
-      if (this.functionPtrSet.includes(`${parameter.name.text}`) && (cType == "int" || cType == "unsigned int")) {
+      if (this.functionPtrSet.includes(`${parameter.name.text}`) && (cType === "int" || cType === "unsigned int")) {
         functionCDefine += `${parameter.name.text} ${parameter.name.text} ${endChar}`;
       } else {
         functionCDefine += `${cType} ${parameter.name.text} ${endChar}`;
@@ -95,16 +95,16 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
   }
 
   visitTypeDeclaration(node: assemblyscript.TypeDeclaration): void {
-    if (node.type.kind == assemblyscript.NodeKind.FunctionType) { // hanlde function type
-      let functionTypeNode = node.type as assemblyscript.FunctionTypeNode;
+    if (node.type.kind === assemblyscript.NodeKind.FunctionType) { // hanlde function type
+      const functionTypeNode = node.type as assemblyscript.FunctionTypeNode;
       let functionCDefine = "";
       functionCDefine += `typedef ${this.transformAscTypeToCType(functionTypeNode.returnType)} (*${node.name.text}) (`;
       this.functionPtrSet.push(`${node.name.text}`);
       for (let i = 0; i < functionTypeNode.parameters.length; ++i) {
-        let parameter = functionTypeNode.parameters[i];
+        const parameter = functionTypeNode.parameters[i];
         const typeStr = parameter.type.range.source.text.substring(parameter.type.range.start, parameter.type.range.end);
         let endChar = ",";
-        if (i == (functionTypeNode.parameters.length - 1)) {
+        if (i === (functionTypeNode.parameters.length - 1)) {
           endChar = "";
         }
         functionCDefine += `${this.transformAscTypeToCType(parameter.type)} ${parameter.name.text} ${endChar}`;
@@ -117,7 +117,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
 }
 
 const compilerOptions = assemblyscript.newOptions();
-let program = assemblyscript.newProgram(compilerOptions);
+const program = assemblyscript.newProgram(compilerOptions);
 let inputFileName = "";
 for (let i = 0; i < argv.length; ++i) {
   const arg = argv[i];
@@ -135,7 +135,7 @@ let cHeaderContent = `
 extern "C" {
 #endif
 `;
-let builder = new CDCHeaderTransfer();
+const builder = new CDCHeaderTransfer();
 builder.visitNode(program.sources[0]);
 cHeaderContent += builder.content;
 builder.finish();
