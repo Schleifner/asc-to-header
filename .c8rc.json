@@ -1,0 +1,7 @@
+{
+    "reporter": ["html", "text"],
+    "reportsDirectory": "./coverage",
+    "src": ["src"],
+    "clean": true,
+    "exclude-after-remap": true
+  }
