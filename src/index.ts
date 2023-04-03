@@ -149,9 +149,8 @@ cHeaderContent += `
 #endif
 #endif
 `;
-/* c8 ignore next */
+/* c8 ignore next 3 */
 if(outputFileName === "") {
-  /* c8 ignore next */
   outputFileName = `${program.sources[0].internalPath}.h`;
 }
 fs.writeFileSync(outputFileName, cHeaderContent);
