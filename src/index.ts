@@ -119,11 +119,15 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
 const compilerOptions = assemblyscript.newOptions();
 const program = assemblyscript.newProgram(compilerOptions);
 let inputFileName = "";
+let outputFileName = "";
 for (let i = 0; i < argv.length; ++i) {
   const arg = argv[i];
   switch (arg) {
     case "-f":
       inputFileName = argv[i + 1];
+      break;
+    case "-o":
+      outputFileName = argv[i + 1];
   }
 }
 const sourceText = fs.readFileSync(inputFileName, { encoding: "utf8" }).replace(/\r?\n/g, "\n");
@@ -145,5 +149,10 @@ cHeaderContent += `
 #endif
 #endif
 `;
-fs.writeFileSync(`${program.sources[0].internalPath}.h`, cHeaderContent);
+/* c8 ignore next */
+if(outputFileName === "") {
+  /* c8 ignore next */
+  outputFileName = `${program.sources[0].internalPath}.h`;
+}
+fs.writeFileSync(outputFileName, cHeaderContent);
 // console.log(cHeaderContent);
