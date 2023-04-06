@@ -1,6 +1,5 @@
 // import { Program, Options, ASTBuilder } from "../node_modules/assemblyscript/dist/assemblyscript.js";
 import * as fs from 'fs';
-import path from "path";
 import { argv } from 'process';
 import { FunctionDeclaration, FunctionExpression, MethodDeclaration } from "types:assemblyscript/src/ast";
 import * as assemblyscript from "../node_modules/assemblyscript/dist/assemblyscript.js";
@@ -12,8 +11,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     super();
   }
   writeContentWithBreakLine(str: string) {
-    this.content += str;
-    this.content += '\n';
+    this.content = `${this.content}${str}\n`;
   }
 
   genValueFromRange(range: assemblyscript.Range): string {
@@ -102,7 +100,6 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
       this.functionPtrSet.push(`${node.name.text}`);
       for (let i = 0; i < functionTypeNode.parameters.length; ++i) {
         const parameter = functionTypeNode.parameters[i];
-        const typeStr = parameter.type.range.source.text.substring(parameter.type.range.start, parameter.type.range.end);
         let endChar = ",";
         if (i === (functionTypeNode.parameters.length - 1)) {
           endChar = "";
@@ -132,23 +129,17 @@ for (let i = 0; i < argv.length; ++i) {
 }
 const sourceText = fs.readFileSync(inputFileName, { encoding: "utf8" }).replace(/\r?\n/g, "\n");
 assemblyscript.parse(program, sourceText, inputFileName, true);
+const builder = new CDCHeaderTransfer();
+builder.visitNode(program.sources[0]);
 let cHeaderContent = `
 #ifndef __types_wasm_${program.sources[0].simplePath}_H__
 #define __types_wasm_${program.sources[0].simplePath}_H__
-#ifdef __cplusplus
 extern "C" {
-#endif
-`;
-const builder = new CDCHeaderTransfer();
-builder.visitNode(program.sources[0]);
-cHeaderContent += builder.content;
-builder.finish();
-cHeaderContent += `
-#ifdef __cplusplus
+${builder.content}
 }
 #endif
-#endif
 `;
+builder.finish();
 /* c8 ignore next 3 */
 if(outputFileName === "") {
   outputFileName = `${program.sources[0].internalPath}.h`;
