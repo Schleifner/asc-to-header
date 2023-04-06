@@ -131,7 +131,7 @@ const sourceText = fs.readFileSync(inputFileName, { encoding: "utf8" }).replace(
 assemblyscript.parse(program, sourceText, inputFileName, true);
 const builder = new CDCHeaderTransfer();
 builder.visitNode(program.sources[0]);
-let cHeaderContent = `
+const cHeaderContent = `
 #ifndef __types_wasm_${program.sources[0].simplePath}_H__
 #define __types_wasm_${program.sources[0].simplePath}_H__
 extern "C" {
