@@ -7,6 +7,10 @@ enum Status16 {
     OK = 0x0,
     FAIL = 0xff,
 }
+enum Another {
+    OK,
+    FAIL = 0x1
+}
 
 export type CustomCallback = (userData: i32) => void;
 

@@ -54,7 +54,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     // console.log(node.range.source.text.substring(node.range.start, node.range.end));
     this.writeContentWithBreakLine(`enum class ${node.name.text}{`);
     for (const item of node.values) {
-      if (item["initializer"] && item.initializer["value"] && item.initializer["value"]["low"]) {
+      if (item["initializer"] && item.initializer.range && (item.initializer.range.end - item.initializer.range.start > 0)) {
         if (this.genValueFromRange(item.initializer.range).startsWith("0x") || this.genValueFromRange(item.initializer.range).startsWith("0X")) {
           this.writeContentWithBreakLine(`${item.name.text}=0x${Number(item.initializer["value"]["low"]).toString(16)},`);
         }
