@@ -24,18 +24,14 @@ output:
 
 #ifndef __types_wasm_example_H__
 #define __types_wasm_example_H__
-#ifdef __cplusplus
 extern "C" {
-#endif
 enum class Status {
   OK = 0x1,
   FAIL = 0x2,
 };
 __attribute__((import_module("example"))) printStatus(Status Status);
 
-#ifdef __cplusplus
 }
-#endif
 #endif
 
 
