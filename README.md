@@ -3,7 +3,7 @@
 ## build
 `npm run build`
 ## run
-`node build/index.js -f [input assemblyscript file]`
+`node --experimental-modules build/index.js -f [input assemblyscript file] -o [target header file]`  
 output:  
 C Header file
 
@@ -38,5 +38,34 @@ __attribute__((import_module("example"))) printStatus(Status Status);
 #endif
 #endif
 
+
+```
+
+## cuation
+
+For function type declaration, when use it in the function parameter, should use the same name.  
+for example:  
+ASC
+```typescript
+export type mycallback = (data: i32) => void;
+export function callService(mycallback: i32):void;
+```
+then we can translate to:  
+```C
+typedef void (*mycallback) (int data);
+ __attribute__((import_module("test"))) void callService(mycallback mycallback);
+
+```
+
+but if we got asc like:  
+ASC
+```typescript
+export type mycallback = (data: i32) => void;
+export function callService(my_callback: i32):void;
+```
+then we can translate to:  
+```C
+typedef void (*mycallback) (int data);
+ __attribute__((import_module("test"))) void callService(int my_callback);
 
 ```

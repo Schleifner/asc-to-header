@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc --build ./tsconfig.json",
     "watch": "npx tsc --build ./tsconfig.json -w & npx nodemon build/Test.js",
-    "test": "node build/index.js -f ./tests/asc1.ts -o ./build/asc1.h && diff tests/asc1.ts.fixture.h build/asc1.h",
+    "test": "node --experimental-modules build/index.js -f ./tests/asc1.ts -o ./build/asc1.h && diff tests/asc1.ts.fixture.h build/asc1.h",
     "lint": "npx tslint --project .",
     "coverage": "npx c8 -- npm test"
   },
