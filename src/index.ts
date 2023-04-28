@@ -6,7 +6,21 @@ import * as assemblyscript from "../node_modules/assemblyscript/dist/assemblyscr
 
 class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
   functionPtrSet = new Array();
-  content="";
+  content = "";
+  typeMap: Map<string, string> = new Map<string, string>([
+    ["void", "void"],
+    ["i8", "int8_t"],
+    ["u8", "uint8_t"],
+    ["i16", "int16_t"],
+    ["u16", "uint16_t"],
+    ["i32", "int32_t"],
+    ["u32", "uint32_t"],
+    ["i64", "int64_t"],
+    ["u64", "uint64_t"],
+    ["f32", "float"],
+    ["f64", "double"],
+    ["boolean", "bool"],
+  ]);
   constructor() {
     super();
   }
@@ -18,35 +32,17 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     return range.source.text.substring(range.start, range.end);;
   }
 
-  transformAscTypeToCType(type: assemblyscript.TypeNode): string {
+  transformAscTypeToCType(type: assemblyscript.TypeNode, name: string = ""): string {
     const typeString = this.genValueFromRange(type.range);
-    switch (typeString) {
-      case "void":
-        return "void";
-      case "i32":
-        return "int";
-      case "u32":
-        return "unsigned int";
-      case "u64":
-        return "unsigned long long int";
-      case "i64":
-        return "long long int";
-      case "f32":
-        return "float";
-      case "f64":
-        return "double";
-      case "boolean":
-        return "bool";
-      case "u8":
-        return "unsigned char";
-      case "i8":
-        return "char";
-      case "u16":
-        return "unsigned short";
-      case "i16":
-        return "short";
-      default:
-        return typeString;
+    if (this.functionPtrSet.includes(name) && (typeString === "i32" || typeString === "u32" || typeString === "usize")) {
+      return name;
+    }
+
+    const cppTypeString: string | undefined = this.typeMap.get(typeString);
+    if (cppTypeString) {
+      return cppTypeString;
+    } else {
+      return typeString;
     }
   }
 
@@ -71,8 +67,14 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
   }
 
   visitFunctionDeclaration(node: FunctionDeclaration, isDefault?: boolean): void {
-    let functionCDefine = ""
-    functionCDefine += ` __attribute__((import_module(\"${node.range.source.simplePath}\"))) ${this.transformAscTypeToCType(node.signature.returnType)} ${node.name.text}(`;
+    let functionCDefine = "";
+    let returnType: string;
+    if (this.genValueFromRange(node.signature.returnType.range) !== "") {
+      returnType = this.transformAscTypeToCType(node.signature.returnType);
+    } else {
+      returnType = "void";
+    }
+    functionCDefine += ` __attribute__((import_module(\"${node.range.source.simplePath}\"))) ${returnType} ${node.name.text}(`;
 
     for (let i = 0; i < node.signature.parameters.length; ++i) {
       const parameter = node.signature.parameters[i];
@@ -80,12 +82,8 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
       if (i === (node.signature.parameters.length - 1)) {
         endChar = "";
       }
-      const cType = this.transformAscTypeToCType(parameter.type);
-      if (this.functionPtrSet.includes(`${parameter.name.text}`) && (cType === "int" || cType === "unsigned int")) {
-        functionCDefine += `${parameter.name.text} ${parameter.name.text} ${endChar}`;
-      } else {
-        functionCDefine += `${cType} ${parameter.name.text} ${endChar}`;
-      }
+      const cType = this.transformAscTypeToCType(parameter.type, parameter.name.text);
+      functionCDefine += `${cType} ${parameter.name.text} ${endChar}`;
     }
     functionCDefine += ');';
     this.writeContentWithBreakLine(functionCDefine);
@@ -134,6 +132,7 @@ builder.visitNode(program.sources[0]);
 const cHeaderContent = `
 #ifndef __types_wasm_${program.sources[0].simplePath}_H__
 #define __types_wasm_${program.sources[0].simplePath}_H__
+#include <stdint.h>
 extern "C" {
 ${builder.content}
 }
@@ -141,7 +140,7 @@ ${builder.content}
 `;
 builder.finish();
 /* c8 ignore next 3 */
-if(outputFileName === "") {
+if (outputFileName === "") {
   outputFileName = `${program.sources[0].internalPath}.h`;
 }
 fs.writeFileSync(outputFileName, cHeaderContent);

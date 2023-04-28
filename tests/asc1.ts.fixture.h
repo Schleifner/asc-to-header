@@ -1,6 +1,7 @@
 
 #ifndef __types_wasm_asc1_H__
 #define __types_wasm_asc1_H__
+#include <stdint.h>
 extern "C" {
 enum class Status10{
 OK=0,
@@ -14,9 +15,9 @@ enum class Another{
 OK,
 FAIL=0x1,
 };
-typedef void (*CustomCallback) (int userData );
- __attribute__((import_module("asc1")))  Test(int a ,long long int b ,unsigned int c ,unsigned long long int d ,short e ,unsigned short f ,unsigned char g ,char h ,bool i ,Status10 j ,Status16 k ,CustomCallback CustomCallback ,float m ,double n );
- __attribute__((import_module("asc1")))  Test2(CustomCallback CustomCallback );
+typedef void (*CustomCallback) (int32_t userData );
+ __attribute__((import_module("asc1"))) void Test(int32_t a ,int64_t b ,uint32_t c ,uint64_t d ,int16_t e ,uint16_t f ,uint8_t g ,int8_t h ,bool i ,Status10 j ,Status16 k ,CustomCallback CustomCallback ,float m ,double n );
+ __attribute__((import_module("asc1"))) void Test2(CustomCallback CustomCallback );
 
 }
 #endif
