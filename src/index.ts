@@ -94,7 +94,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     if (node.type.kind === assemblyscript.NodeKind.FunctionType) { // hanlde function type
       const functionTypeNode = node.type as assemblyscript.FunctionTypeNode;
       let functionCDefine = "";
-      functionCDefine += `typedef ${this.transformAscTypeToCType(functionTypeNode.returnType)} (*${node.name.text}) (`;
+      functionCDefine += `using ${node.name.text} = ${this.transformAscTypeToCType(functionTypeNode.returnType)} (*) (`;
       this.functionPtrSet.push(`${node.name.text}`);
       for (let i = 0; i < functionTypeNode.parameters.length; ++i) {
         const parameter = functionTypeNode.parameters[i];
