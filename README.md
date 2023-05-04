@@ -51,8 +51,7 @@ then we can translate to:
 using mycallback = void (*) (int data);
  __attribute__((import_module("test"))) void callService(mycallback mycallback);
 
-```
-
+```  
 but if we got asc like:  
 ASC
 ```typescript
