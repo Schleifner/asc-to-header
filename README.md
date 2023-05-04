@@ -29,7 +29,7 @@ enum class Status {
   OK = 0x1,
   FAIL = 0x2,
 };
-__attribute__((import_module("example"))) printStatus(Status Status);
+__attribute__((import_module("example"))) void printStatus(Status Status);
 
 }
 #endif
@@ -47,8 +47,8 @@ export type mycallback = (data: i32) => void;
 export function callService(mycallback: i32):void;
 ```
 then we can translate to:  
-```C
-typedef void (*mycallback) (int data);
+```C++
+using mycallback = void (*) (int data);
  __attribute__((import_module("test"))) void callService(mycallback mycallback);
 
 ```
@@ -60,8 +60,8 @@ export type mycallback = (data: i32) => void;
 export function callService(my_callback: i32):void;
 ```
 then we can translate to:  
-```C
-typedef void (*mycallback) (int data);
+```C++
+using mycallback = void (*) (int data);
  __attribute__((import_module("test"))) void callService(int my_callback);
 
 ```
