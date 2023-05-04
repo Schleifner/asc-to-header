@@ -85,7 +85,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
       const cType = this.transformAscTypeToCType(parameter.type, parameter.name.text);
       functionCDefine += `${cType} ${parameter.name.text} ${endChar}`;
     }
-    functionCDefine += ');';
+    functionCDefine += ') noexcept;';
     this.writeContentWithBreakLine(functionCDefine);
     super.visitFunctionDeclaration(node, isDefault);
   }
