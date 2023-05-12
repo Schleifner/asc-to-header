@@ -1,8 +1,6 @@
-// import { Program, Options, ASTBuilder } from "../node_modules/assemblyscript/dist/assemblyscript.js";
 import * as fs from 'fs';
 import { argv } from 'process';
-import { FunctionDeclaration, FunctionExpression, MethodDeclaration } from "types:assemblyscript/src/ast";
-import * as assemblyscript from "../node_modules/assemblyscript/dist/assemblyscript.js";
+import * as assemblyscript from "assemblyscript"
 
 class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
   functionPtrSet = new Array();
@@ -66,7 +64,7 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     super.visitEnumDeclaration(node, isDefault);
   }
 
-  visitFunctionDeclaration(node: FunctionDeclaration, isDefault?: boolean): void {
+  visitFunctionDeclaration(node: assemblyscript.FunctionDeclaration, isDefault?: boolean): void {
     let functionCDefine = "";
     let returnType: string;
     if (this.genValueFromRange(node.signature.returnType.range) !== "") {
