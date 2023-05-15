@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable prettier/prettier */
 enum Status10 {
     OK = 0,
     FAIL = 1,
