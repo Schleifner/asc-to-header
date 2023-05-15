@@ -31,11 +31,16 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
 
   transformAscTypeToCType(type: assemblyscript.TypeNode, name = ""): string {
     const typeString = this.genValueFromRange(type.range);
-    if (
-      this.functionPtrSet.includes(name) &&
-      (typeString === "i32" || typeString === "u32" || typeString === "usize")
-    ) {
+    const isPtrType: boolean = typeString === "i32" || typeString === "u32" || typeString === "usize";
+    if (this.functionPtrSet.includes(name) && isPtrType) {
       return name;
+    }
+
+    // filter all xxPtr or xxPointer parameter and return the void* type
+    const isPtrName: boolean = name.endsWith("Ptr") || name.endsWith("Pointer") || name === "ptr" || name === "pointer";
+
+    if (isPtrName && isPtrType) {
+      return "void *";
     }
 
     const cppTypeString: string | undefined = this.typeMap.get(typeString);
