@@ -3,7 +3,7 @@
 ## build
 `npm run build`
 ## run
-`node --experimental-modules build/index.js -f [input assemblyscript file] -o [target header file]`  
+`node --experimental-modules build/src/index.js -f [input assemblyscript file] -o [target header file]`  
 output:  
 C Header file
 

@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc --build ./tsconfig.json",
-    "watch": "npx tsc --build ./tsconfig.json -w & npx nodemon build/Test.js",
-    "test": "node --experimental-modules build/index.js -f ./tests/asc1.ts -o ./build/asc1.hpp && diff tests/asc1.ts.fixture.h build/asc1.hpp && clang++ -c -Wall -Wextra -Wpedantic -Wnon-virtual-dtor -Wformat=2 -Wformat-security -Werror=format-security -Wcast-align -Wcast-qual -Wconversion -Wdouble-promotion -Wfloat-equal -Wmissing-include-dirs -Wold-style-cast -Wredundant-decls -Wshadow -Wsign-conversion -Wswitch -Wuninitialized -Wunused-parameter -Walloca -Wunused-result -Wunused-local-typedefs -Wwrite-strings -Wpointer-arith -Wfloat-conversion -Wnull-dereference -Wdiv-by-zero -Wswitch-default -Wno-switch-bool -Wunknown-pragmas --target=wasm32 build/asc1.hpp && clang-tidy build/asc1.hpp",
+    "watch": "npx tsc --build ./tsconfig.json -w & npx nodemon build/src/index.js",
+    "unittest": "mocha --timeout 10000 ./build/tests/**/*.js",
+    "validate_hpp": "diff fixture/asc1.ts.fixture.h build/asc1.hpp && clang++ -c -Wall -Wextra -Wpedantic -Wnon-virtual-dtor -Wformat=2 -Wformat-security -Werror=format-security -Wcast-align -Wcast-qual -Wconversion -Wdouble-promotion -Wfloat-equal -Wmissing-include-dirs -Wold-style-cast -Wredundant-decls -Wshadow -Wsign-conversion -Wswitch -Wuninitialized -Wunused-parameter -Walloca -Wunused-result -Wunused-local-typedefs -Wwrite-strings -Wpointer-arith -Wfloat-conversion -Wnull-dereference -Wdiv-by-zero -Wswitch-default -Wno-switch-bool -Wunknown-pragmas --target=wasm32 build/asc1.hpp && clang-tidy build/asc1.hpp",
+    "test": "npm run coverage && npm run validate_hpp",
     "lint": "eslint src --ext ts",
-    "coverage": "npx c8 -- npm test",
-    "spell": "cspell \"{src,tests}/**/*.ts\""
+    "coverage": "npm run build && npx c8 -- npm run unittest",
+    "spell": "cspell \"{src,tests,fixture}/**/*.ts\""
   },
   "author": "",
   "type": "module",
@@ -39,6 +41,8 @@
     "eslint-plugin-unicorn": "^45.0.2",
     "eslint-plugin-unused-imports": "^2.0.0",
     "tslint": "^6.1.3",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.3",
+    "@types/mocha": "^9.1.1",
+    "mocha": "^10.2.0"
   }
 }
