@@ -60,7 +60,7 @@ rules:
   import/no-unresolved:
     - error
     - ignore:
-      - "vscode"
+        - "vscode"
   max-len:
     - error
     - 150
@@ -68,7 +68,6 @@ rules:
   max-statements:
     - error
     - 100 # TODO reduce...was 50
-  no-console: error
   no-debugger: error
   no-control-regex: 0
   no-duplicate-imports: error
@@ -189,7 +188,7 @@ rules:
   unicorn/catch-error-name: off
   unicorn/consistent-function-scoping: off
   unicorn/empty-brace-spaces: off
-  unicorn/filename-case: 
+  unicorn/filename-case:
     - error
     - case: pascalCase
   unicorn/no-fn-reference-in-iterator: off

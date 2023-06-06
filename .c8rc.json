@@ -1,7 +1,10 @@
 {
-    "reporter": ["html", "text"],
-    "reportsDirectory": "./coverage",
-    "src": ["src"],
-    "clean": true,
-    "exclude-after-remap": true
-  }
+  "reporter": ["html", "text"],
+  "reportsDirectory": "./coverage",
+  "src": ["src"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["tests/**/*", "src/index.ts"],
+  "clean": true,
+  "exclude-after-remap": true,
+  "all": true
+}

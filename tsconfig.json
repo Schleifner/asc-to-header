@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "module": "es6",
-    "target": "es6",
+    "module": "NodeNext",
+    "target": "ESNext",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": true,
     "outDir": "./build"
   },
-  "include": [
-    "./src/**/*.ts"
-  ],
   "exclude": [
-    "./test/**/*.ts"
-  ]
+    "./fixture/**/*.ts",
+    "node_modules",
+    "build/**/*",
+  ],
+  "rootDirs": [
+    "./tests",
+    "./src"
+  ],
 }
