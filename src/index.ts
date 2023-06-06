@@ -18,6 +18,8 @@ class CDCHeaderTransfer extends assemblyscript.ASTBuilder {
     ["u64", "uint64_t"],
     ["f32", "float"],
     ["f64", "double"],
+    ["usize", "uintptr_t"],
+    ["UserDataType", "uintptr_t"],
     ["boolean", "bool"]
   ]);
 

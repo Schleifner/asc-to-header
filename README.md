@@ -38,7 +38,7 @@ __attribute__((import_module("example"))) void printStatus(Status Status);
 ```
 
 ## cuation
-
+### Function pointer type
 For function type declaration, when use it in the function parameter, should use the same name.  
 for example:  
 ASC
@@ -65,3 +65,6 @@ using mycallback = void (*) (int data);
  __attribute__((import_module("test"))) void callService(int my_callback);
 
 ```
+
+### UserData Type
+Some user data type, which is often used as C like API context, is usually a pointer type. Type `UserDataType` is designed as a reserved type. This type will be translated to `uintptr_t` in C++.
