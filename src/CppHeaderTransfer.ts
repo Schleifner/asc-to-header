@@ -85,7 +85,7 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
     } else {
       returnType = this.transformAscTypeToCType(node.signature.returnType);
     }
-    functionCDefine += ` __attribute__((import_module("${node.range.source.simplePath}"))) ${returnType} ${node.name.text}(`;
+    functionCDefine += `WASM_IMPORT_ATTRIBUTE("${node.range.source.simplePath}") ${returnType} ${node.name.text}(`;
 
     for (let i = 0; i < node.signature.parameters.length; ++i) {
       const parameter = node.signature.parameters[i];
