@@ -26,6 +26,15 @@ export class AscToHeaderConvertor {
 #ifndef __types_wasm_${this.program.sources[0].simplePath}_H__
 #define __types_wasm_${this.program.sources[0].simplePath}_H__
 #include <stdint.h>
+
+#ifndef WASM_IMPORT_ATTRIBUTE
+#ifdef __wasm32__
+#define WASM_IMPORT_ATTRIBUTE(name) __attribute__((import_module(name)))
+#else
+#define WASM_IMPORT_ATTRIBUTE(name)
+#endif
+#endif
+
 extern "C" {
 ${builder.getHppContent()}
 }
