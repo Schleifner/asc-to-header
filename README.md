@@ -1,9 +1,13 @@
 # AssemblyScript C Header Translator
+This tool is used for translate an AssemblyScript type definiton file to C++ header file.
 
 ## build
-`npm run build`
+```
+npm install
+npm run bundle
+```
 ## run
-`node --experimental-modules build/src/index.js -f [input assemblyscript file] -o [target header file]`  
+`node --experimental-modules dist/index.js -f [input assemblyscript file] -o [target header file]`  
 output:  
 C Header file
 
