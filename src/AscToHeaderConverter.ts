@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as Path from "path";
 
 import * as assemblyscript from "assemblyscript";
 
@@ -42,6 +43,7 @@ ${builder.getHppContent()}
 `;
     builder.finish();
     try {
+      fs.mkdirSync(Path.dirname(outputFileName), {recursive: true});
       fs.writeFileSync(outputFileName, cHeaderContent);
     } catch (e) {
       console.error(`write file ${outputFileName} failed due to ${JSON.stringify(e)}`);

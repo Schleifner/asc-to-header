@@ -7,7 +7,7 @@ npm install
 npm run bundle
 ```
 ## run
-`node --experimental-modules dist/index.js -f [input assemblyscript file] -o [target header file]`  
+`node --experimental-modules bin/Cli.js -f [input assemblyscript file] -o [target header file]`  
 output:  
 C Header file
 

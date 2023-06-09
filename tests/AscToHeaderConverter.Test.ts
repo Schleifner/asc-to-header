@@ -10,7 +10,7 @@ import {fileURLToPath} from "url";
 
 import {setup, suite, teardown, test} from "mocha";
 
-import {AscToHeaderConvertor} from "../src/AscToHeaderConverter.js";
+import {AscToHeaderConvertor} from "../src/index.js";
 
 suite("Test AscToHeaderConvertor", () => {
   setup(() => {});

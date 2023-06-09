@@ -1,3 +1,5 @@
+import {execSync} from "child_process";
+
 import {build} from "esbuild";
 
 try {
@@ -10,7 +12,19 @@ try {
     sourcemap: true,
     loader: {".ts": "ts", ".tsx": "tsx"},
     packages: "external",
-    format: "esm"
+    format: "esm",
+    plugins: [
+      {
+        name: "TypeScriptDeclarationsPlugin",
+        setup(build) {
+          build.onEnd((result) => {
+            if (result.errors.length === 0) {
+              execSync("npx tsc -p tsconfig-bundle.json");
+            }
+          });
+        }
+      }
+    ]
   });
 } catch (e) {
   console.log(`bundle failed due to ${JSON.stringify(e)}`);

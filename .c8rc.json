@@ -3,7 +3,7 @@
   "reportsDirectory": "./coverage",
   "src": ["src"],
   "include": ["src/**/*.ts"],
-  "exclude": ["tests/**/*", "src/index.ts"],
+  "exclude": ["tests/**/*"],
   "clean": true,
   "exclude-after-remap": true,
   "all": true
