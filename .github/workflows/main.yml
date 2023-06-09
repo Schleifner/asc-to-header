@@ -36,5 +36,5 @@ jobs:
       - name: bundle
         run: |
           npm run bundle
-          node dist/index.js -f fixture/asc1.ts -o build/asc2.hpp
+          node bin/Cli.js -f fixture/asc1.ts -o build/asc2.hpp
           diff build/asc2.hpp build/asc1.hpp

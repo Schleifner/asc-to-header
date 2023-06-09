@@ -1,7 +1,10 @@
 {
   "name": "@schleifner/asc-to-header",
-  "version": "1.0.0",
+  "version": "0.1.4",
   "description": "",
+  "bin": {
+    "asc-to-header": "bin/Cli.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -13,13 +16,15 @@
     "lint": "eslint src tests --ext ts",
     "coverage": "npm run build && npx c8 -- npm run unittest",
     "spell": "cspell \"{src,tests,fixture}/**/*.ts\"",
-    "bundle": "node Bundle.js"
+    "bundle": "node Bundle.js",
+    "prepack": "npm run bundle"
   },
   "author": "Schleifner",
   "type": "module",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
-    "assemblyscript": "^0.26.7"
+    "assemblyscript": "^0.26.7",
+    "commander": "^10.0.1"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
