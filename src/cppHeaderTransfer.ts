@@ -60,7 +60,11 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
         ) {
           this.writeContentWithBreakLine(`${item.name.text}=${this.genValueFromRange(expr.range)},`);
         } else {
-          throw new TypeError(`enum expr not supported: ${item.name.text}=${this.genValueFromRange(expr.range)}.`);
+          throw new TypeError(
+            `enum expr not supported: ${item.name.text}=${this.genValueFromRange(
+              expr.range
+            )}. unary expression with integer literal and integer literal are supported.`
+          );
         }
       }
     }

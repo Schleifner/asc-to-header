@@ -1,4 +1,4 @@
 enum Status16 {
-    OK = "2",
+    OK = 1 + 1,
     FAIL = 0xff,
 }
