@@ -4,21 +4,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import assert from "assert";
-import * as Path from "path";
-import {fileURLToPath} from "url";
+import assert from "node:assert";
+import * as Path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import {setup, suite, teardown, test} from "mocha";
+import { suite, test } from "mocha";
 
-import {AscToHeaderConvertor} from "../src/index.js";
+import { AscToHeaderConvertor } from "../src/index.js";
 
 suite("Test AscToHeaderConvertor", () => {
-  setup(() => {});
-
-  teardown(() => {});
-
   const PROJECT_ROOT = Path.dirname(Path.dirname(Path.dirname(fileURLToPath(import.meta.url))));
   const inputFile = Path.join(PROJECT_ROOT, "fixture", "asc1.ts");
+  const badInputFile = Path.join(PROJECT_ROOT, "fixture", "badEnum.ts"); //enum with string
   const outputFile = Path.join(PROJECT_ROOT, "build", "asc1.hpp");
 
   test("test wrong input path", () => {
@@ -37,5 +34,11 @@ suite("Test AscToHeaderConvertor", () => {
     const ascToHeaderConvertor = new AscToHeaderConvertor();
     const success = ascToHeaderConvertor.generateHpp(inputFile, outputFile);
     assert(success);
+  });
+
+  test("convert fail", () => {
+    const ascToHeaderConvertor = new AscToHeaderConvertor();
+    const success = ascToHeaderConvertor.generateHpp(badInputFile, outputFile);
+    assert(!success);
   });
 });

@@ -1,1 +1,1 @@
-export {AscToHeaderConvertor} from "./AscToHeaderConverter.js";
+export { AscToHeaderConvertor } from "./ascToHeaderConverter.js";

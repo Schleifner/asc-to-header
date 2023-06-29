@@ -19,6 +19,7 @@ FAIL=1,
 enum class Status16{
 OK=0x0,
 FAIL=0xff,
+WAITING=-1,
 };
 enum class Another{
 OK,
