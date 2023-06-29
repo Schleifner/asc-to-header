@@ -1,9 +1,9 @@
-import * as fs from "fs";
-import * as Path from "path";
+import * as fs from "node:fs";
+import * as Path from "node:path";
 
 import * as assemblyscript from "assemblyscript";
 
-import {CppHeaderTransfer} from "./CppHeaderTransfer.js";
+import { CppHeaderTransfer } from "./cppHeaderTransfer.js";
 
 export class AscToHeaderConvertor {
   private program: assemblyscript.Program;
@@ -15,14 +15,19 @@ export class AscToHeaderConvertor {
   public generateHpp(inputFileName: string, outputFileName: string): boolean {
     let sourceText: string;
     try {
-      sourceText = fs.readFileSync(inputFileName, {encoding: "utf8"}).replace(/\r?\n/g, "\n");
-    } catch (e) {
-      console.error(`open file ${inputFileName} failed due to ${JSON.stringify(e)}`);
+      sourceText = fs.readFileSync(inputFileName, { encoding: "utf8" }).replace(/\r?\n/g, "\n");
+    } catch (error) {
+      console.error(`open file ${inputFileName} failed due to ${JSON.stringify(error)}`);
       return false;
     }
     assemblyscript.parse(this.program, sourceText, inputFileName, true);
     const builder = new CppHeaderTransfer();
-    builder.visitNode(this.program.sources[0]);
+    try {
+      builder.visitNode(this.program.sources[0]);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
     const cHeaderContent = `
 #ifndef __types_wasm_${this.program.sources[0].simplePath}_H__
 #define __types_wasm_${this.program.sources[0].simplePath}_H__
@@ -43,10 +48,10 @@ ${builder.getHppContent()}
 `;
     builder.finish();
     try {
-      fs.mkdirSync(Path.dirname(outputFileName), {recursive: true});
+      fs.mkdirSync(Path.dirname(outputFileName), { recursive: true });
       fs.writeFileSync(outputFileName, cHeaderContent);
-    } catch (e) {
-      console.error(`write file ${outputFileName} failed due to ${JSON.stringify(e)}`);
+    } catch (error) {
+      console.error(`write file ${outputFileName} failed due to ${JSON.stringify(error)}`);
       return false;
     }
     return true;

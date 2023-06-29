@@ -17,7 +17,7 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
     ["f64", "double"],
     ["usize", "uintptr_t"],
     ["UserDataType", "uintptr_t"],
-    ["boolean", "bool"]
+    ["boolean", "bool"],
   ]);
 
   private writeContentWithBreakLine(str: string) {
@@ -25,7 +25,7 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
   }
 
   private genValueFromRange(range: assemblyscript.Range): string {
-    return range.source.text.substring(range.start, range.end);
+    return range.source.text.slice(range.start, range.end);
   }
 
   private transformAscTypeToCType(type: assemblyscript.TypeNode, name = ""): string {
@@ -43,34 +43,29 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
     }
 
     const cppTypeString: string | undefined = this.typeMap.get(typeString);
-    if (cppTypeString) {
-      return cppTypeString;
-    } else {
-      return typeString;
-    }
+    return cppTypeString ?? typeString;
   }
 
   public visitEnumDeclaration(node: assemblyscript.EnumDeclaration, isDefault?: boolean): void {
-    // console.log(node.range.source.text.substring(node.range.start, node.range.end));
     this.writeContentWithBreakLine(`enum class ${node.name.text}{`);
     for (const item of node.values) {
-      if (
-        item["initializer"] &&
-        item.initializer.range &&
-        item.initializer.range.end - item.initializer.range.start > 0
-      ) {
-        if (
-          this.genValueFromRange(item.initializer.range).startsWith("0x") ||
-          this.genValueFromRange(item.initializer.range).startsWith("0X")
-        ) {
-          this.writeContentWithBreakLine(
-            `${item.name.text}=0x${Number(item.initializer["value"]["low"]).toString(16)},`
-          );
-        } else {
-          this.writeContentWithBreakLine(`${item.name.text}=${Number(item.initializer["value"]["low"]).toString()},`);
-        }
-      } else {
+      if (item.initializer === null) {
         this.writeContentWithBreakLine(`${item.name.text},`);
+      } else {
+        const expr = item.initializer;
+        if (
+          expr instanceof assemblyscript.IntegerLiteralExpression ||
+          (expr instanceof assemblyscript.UnaryPrefixExpression &&
+            expr.operand instanceof assemblyscript.IntegerLiteralExpression)
+        ) {
+          this.writeContentWithBreakLine(`${item.name.text}=${this.genValueFromRange(expr.range)},`);
+        } else {
+          throw new TypeError(
+            `enum expr not supported: ${item.name.text}=${this.genValueFromRange(
+              expr.range
+            )}. unary expression with integer literal and integer literal are supported.`
+          );
+        }
       }
     }
     this.writeContentWithBreakLine(`};`);
@@ -79,12 +74,10 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
 
   public visitFunctionDeclaration(node: assemblyscript.FunctionDeclaration, isDefault?: boolean): void {
     let functionCDefine = "";
-    let returnType: string;
-    if (this.genValueFromRange(node.signature.returnType.range) === "") {
-      returnType = "void";
-    } else {
-      returnType = this.transformAscTypeToCType(node.signature.returnType);
-    }
+    const returnType =
+      this.genValueFromRange(node.signature.returnType.range) === ""
+        ? "void"
+        : this.transformAscTypeToCType(node.signature.returnType);
     functionCDefine += `WASM_IMPORT_ATTRIBUTE("${node.range.source.simplePath}") ${returnType} ${node.name.text}(`;
 
     for (let i = 0; i < node.signature.parameters.length; ++i) {
