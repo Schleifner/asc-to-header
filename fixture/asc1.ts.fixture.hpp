@@ -1,7 +1,8 @@
 
+// clang-format off
 #ifndef __types_wasm_asc1_H__
 #define __types_wasm_asc1_H__
-#include <stdint.h>
+#include <stdint.h> // NOLINT(modernize-deprecated-headers)
 
 #ifndef WASM_IMPORT_ATTRIBUTE
 #ifdef __wasm32__
@@ -12,16 +13,16 @@
 #endif
 
 extern "C" {
-enum class Status10{
+enum class Status10 {
 OK=0,
 FAIL=1,
 };
-enum class Status16{
+enum class Status16 {
 OK=0x0,
 FAIL=0xff,
 WAITING=-1,
 };
-enum class Another{
+enum class Another {
 OK,
 FAIL=0x1,
 };
@@ -31,4 +32,4 @@ WASM_IMPORT_ATTRIBUTE("asc1") uint32_t Test2(CustomCallback CustomCallback ,uint
 WASM_IMPORT_ATTRIBUTE("asc1") uint32_t Test3(void * ptr ,void * pointer ,void * myPtr ,void * myPointer ) noexcept;
 
 }
-#endif
+#endif      

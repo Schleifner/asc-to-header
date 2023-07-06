@@ -38,3 +38,5 @@ jobs:
           npm run bundle
           node bin/Cli.js -f fixture/asc1.ts -o build/asc2.hpp
           diff build/asc2.hpp build/asc1.hpp
+          node bin/Cli.js -f fixture/asc.compiler.ts -o build/asc2.compiler.ts.hpp --compiler --namespace "testNamespace" --headerIdentifier "__TEST_HEADER_IDENTIFIER__"  
+          diff build/asc2.compiler.ts.hpp build/asc.compiler.ts.hpp

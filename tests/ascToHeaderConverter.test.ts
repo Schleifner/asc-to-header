@@ -17,6 +17,8 @@ suite("Test AscToHeaderConvertor", () => {
   const inputFile = Path.join(PROJECT_ROOT, "fixture", "asc1.ts");
   const badInputFile = Path.join(PROJECT_ROOT, "fixture", "badEnum.ts"); //enum with string
   const outputFile = Path.join(PROJECT_ROOT, "build", "asc1.hpp");
+  const compilerInputFile = Path.join(PROJECT_ROOT, "fixture", "asc.compiler.ts");
+  const compilerOutputFile = Path.join(PROJECT_ROOT, "build", "asc.compiler.ts.hpp");
 
   test("test wrong input path", () => {
     const ascToHeaderConvertor = new AscToHeaderConvertor();
@@ -33,6 +35,16 @@ suite("Test AscToHeaderConvertor", () => {
   test("convert success", () => {
     const ascToHeaderConvertor = new AscToHeaderConvertor();
     const success = ascToHeaderConvertor.generateHpp(inputFile, outputFile);
+    assert(success);
+  });
+
+  test("convert for compiler success", () => {
+    const ascToHeaderConvertor = new AscToHeaderConvertor();
+    const success = ascToHeaderConvertor.generateHpp(compilerInputFile, compilerOutputFile, {
+      compiler: true,
+      namespace: "testNamespace",
+      headerIdentifier: "__TEST_HEADER_IDENTIFIER__",
+    });
     assert(success);
   });
 
