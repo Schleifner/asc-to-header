@@ -1,6 +1,11 @@
 import * as assemblyscript from "assemblyscript";
 
 export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
+  public constructor(compiler: boolean) {
+    super();
+    this.compiler = compiler;
+  }
+  private compiler;
   private functionPtrSet = [];
   private content = "";
   private typeMap: Map<string, string> = new Map<string, string>([
@@ -30,24 +35,31 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
 
   private transformAscTypeToCType(type: assemblyscript.TypeNode, name = ""): string {
     const typeString = this.genValueFromRange(type.range);
-    const isPtrType: boolean = typeString === "i32" || typeString === "u32" || typeString === "usize";
-    if (this.functionPtrSet.includes(name) && isPtrType) {
-      return name;
+    if (!this.compiler) {
+      // for JIT compiler, keep ( i32 / U32 / usize ) type transform logic
+      const isPtrType: boolean = typeString === "i32" || typeString === "u32" || typeString === "usize";
+      if (this.functionPtrSet.includes(name) && isPtrType) {
+        return name;
+      }
+
+      // filter all xxPtr or xxPointer parameter and return the void* type
+      const isPtrName: boolean =
+        name.endsWith("Ptr") || name.endsWith("Pointer") || name === "ptr" || name === "pointer";
+
+      if (isPtrName && isPtrType) {
+        return "void *";
+      }
     }
-
-    // filter all xxPtr or xxPointer parameter and return the void* type
-    const isPtrName: boolean = name.endsWith("Ptr") || name.endsWith("Pointer") || name === "ptr" || name === "pointer";
-
-    if (isPtrName && isPtrType) {
-      return "void *";
-    }
-
     const cppTypeString: string | undefined = this.typeMap.get(typeString);
+    if (this.compiler && cppTypeString && cppTypeString === "uintptr_t") {
+      // for compiler transform, all point type should be uint32_t
+      return "uint32_t";
+    }
     return cppTypeString ?? typeString;
   }
 
   public visitEnumDeclaration(node: assemblyscript.EnumDeclaration, isDefault?: boolean): void {
-    this.writeContentWithBreakLine(`enum class ${node.name.text}{`);
+    this.writeContentWithBreakLine(`enum class ${node.name.text} ${this.compiler ? ": uint32_t " : ""}{`);
     for (const item of node.values) {
       if (item.initializer === null) {
         this.writeContentWithBreakLine(`${item.name.text},`);
@@ -63,7 +75,7 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
           throw new TypeError(
             `enum expr not supported: ${item.name.text}=${this.genValueFromRange(
               expr.range
-            )}. unary expression with integer literal and integer literal are supported.`
+            )}. (Only unary expression with integer literal and integer literal are supported.)`
           );
         }
       }
@@ -78,7 +90,8 @@ export class CppHeaderTransfer extends assemblyscript.ASTBuilder {
       this.genValueFromRange(node.signature.returnType.range) === ""
         ? "void"
         : this.transformAscTypeToCType(node.signature.returnType);
-    functionCDefine += `WASM_IMPORT_ATTRIBUTE("${node.range.source.simplePath}") ${returnType} ${node.name.text}(`;
+    const compilerPrefix = this.compiler ? "" : `WASM_IMPORT_ATTRIBUTE("${node.range.source.simplePath}") `;
+    functionCDefine += `${compilerPrefix}${returnType} ${node.name.text}(`;
 
     for (let i = 0; i < node.signature.parameters.length; ++i) {
       const parameter = node.signature.parameters[i];
