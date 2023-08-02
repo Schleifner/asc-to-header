@@ -1,6 +1,6 @@
 {
   "name": "@schleifner/asc-to-header",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "bin": {
     "asc-to-header": "bin/Cli.js"
