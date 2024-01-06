@@ -1,6 +1,6 @@
 {
   "name": "@schleifner/asc-to-header",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "",
   "bin": {
     "asc-to-header": "bin/Cli.js"
@@ -25,7 +25,7 @@
   "type": "module",
   "license": "MIT",
   "peerDependencies": {
-    "assemblyscript": "^0.26.7",
+    "assemblyscript": "^0.27.22",
     "commander": "^10.0.1"
   },
   "devDependencies": {
